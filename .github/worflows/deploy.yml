@@ -1,0 +1,23 @@
+name: Deploy no GitHub Pages
+
+on:
+  push:
+    branches:
+      - main          # dispara só quando fizer push na main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest    # máquina virtual que vai executar
+
+    permissions:
+      contents: write         # necessário para escrever no branch gh-pages
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Publicar no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./     # publica tudo da raiz do projeto

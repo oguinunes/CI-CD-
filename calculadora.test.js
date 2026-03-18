@@ -1,7 +1,7 @@
 const { soma, divide } = require("./calculadora");
 
 test("soma 2 + 3 = 5", () => {
-  expect(soma(2, 3)).toBe(98); // errado
+  expect(soma(2, 3)).toBe(5); // certo
 });
 
 test("soma com negativo", () => {

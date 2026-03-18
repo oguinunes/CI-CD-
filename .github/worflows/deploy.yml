@@ -1,23 +1,59 @@
-name: Deploy no GitHub Pages
+name: CI + Deploy no GitHub Pages
 
 on:
   push:
     branches:
-      - main          # dispara só quando fizer push na main
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest    # máquina virtual que vai executar
-
-    permissions:
-      contents: write         # necessário para escrever no branch gh-pages
+  testes:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar o código
+      - name: 📥 Baixar o código
         uses: actions/checkout@v4
 
-      - name: Publicar no GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: 🟨 Configurar Node.js
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./     # publica tudo da raiz do projeto
+          node-version: '20'
+
+      - name: 📦 Instalar dependências
+        run: npm install
+
+      - name: 🧪 Rodar testes
+        run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: testes          # só roda se testes passarem
+
+    # só faz deploy em push direto na main (não em PRs)
+    if: github.event_name == 'push'
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 📥 Baixar o código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 📤 Fazer upload dos arquivos
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 🚀 Deploy no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

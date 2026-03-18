@@ -5,3 +5,8 @@ body {
   text-align: center;
   color: #150b0b;
 }
+
+p.nomes {
+  font-size: 20px;
+  color: #150b0b;
+}

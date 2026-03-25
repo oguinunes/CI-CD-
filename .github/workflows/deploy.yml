@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: testes          # só roda se testes passarem
 
-    # só faz deploy em push direto na main (não em PRs)
+    # só faz deploy em push direto na main 
     if: github.event_name == 'push'
 
     permissions:
